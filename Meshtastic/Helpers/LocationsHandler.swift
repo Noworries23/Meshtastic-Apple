@@ -17,6 +17,7 @@ import OSLog
 	public var manager = CLLocationManager()
 	private var background: CLBackgroundActivitySession?
 	private var locationDeliveryStarted = false
+	private lazy var fieldLoggingService = FieldLoggingService(modelContext: PersistenceController.shared.context)
 	var enableSmartPosition: Bool = UserDefaults.enableSmartPosition
 
 	@Published var locationsArray: [CLLocation] = [CLLocation]()
@@ -211,6 +212,9 @@ import OSLog
 		Task { @MainActor in
 			guard self.updatesStarted else { return }
 			for location in locations {
+				Task { @MainActor [weak self] in
+					self?.fieldLoggingService.logGPSPoint(location)
+				}
 				self.recordLocation(location, isStationary: false)
 			}
 		}

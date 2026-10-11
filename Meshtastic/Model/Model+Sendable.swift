@@ -27,8 +27,10 @@ extension DiscoverySessionEntity: @unchecked Sendable {}
 extension DisplayConfigEntity: @unchecked Sendable {}
 extension ExternalNotificationConfigEntity: @unchecked Sendable {}
 extension FirmwareReleaseEntity: @unchecked Sendable {}
+extension GPSObservationEntity: @unchecked Sendable {}
 extension LoRaConfigEntity: @unchecked Sendable {}
 extension LocationEntity: @unchecked Sendable {}
+extension LoggingSessionEntity: @unchecked Sendable {}
 extension MQTTConfigEntity: @unchecked Sendable {}
 extension MeshBeaconConfigEntity: @unchecked Sendable {}
 extension MessageEntity: @unchecked Sendable {}
@@ -53,5 +55,3 @@ extension TraceRouteEntity: @unchecked Sendable {}
 extension TraceRouteHopEntity: @unchecked Sendable {}
 extension UserEntity: @unchecked Sendable {}
 extension WaypointEntity: @unchecked Sendable {}
-
-

@@ -67,7 +67,10 @@ enum MeshtasticSchemaV1: VersionedSchema {
 			DiscoverySessionEntity.self,
 			DiscoveryPresetResultEntity.self,
 			DiscoveredNodeEntity.self,
-			DiscoveredBeaconEntity.self
+			DiscoveredBeaconEntity.self,
+			// Field logging entities
+			LoggingSessionEntity.self,
+			GPSObservationEntity.self
 		]
 	}
 }
