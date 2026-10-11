@@ -411,6 +411,44 @@ actor MeshPackets {
 		pendingMessageChange = true
 	}
 
+	func logRadioObservation(packet: MeshPacket) {
+		let metadata: RadioPacketMetaData
+		switch packet.payloadVariant {
+		case .decoded(let data):
+			metadata = RadioPacketMetaData(
+				fromNode: UInt32(truncatingIfNeeded: packet.from),
+				toNode: UInt32(truncatingIfNeeded: packet.to),
+				packetId: UInt32(truncatingIfNeeded: packet.id),
+				portNum: Int(data.portnum.rawValue),
+				channel: Int(packet.channel),
+				hopStart: packet.hopStart == 0 ? nil : Int(packet.hopStart),
+				hopLimit: packet.hopLimit == 0 ? nil : Int(packet.hopLimit),
+				rssi: packet.hasRxRssi ? Int(packet.rxRssi) : nil,
+				snr: packet.rxSnr == 0 ? nil : packet.rxSnr,
+				viaMqtt: packet.viaMqtt,
+				rawPayload: Data(data.payload)
+			)
+		default:
+			metadata = RadioPacketMetaData(
+				fromNode: UInt32(truncatingIfNeeded: packet.from),
+				toNode: UInt32(truncatingIfNeeded: packet.to),
+				packetId: UInt32(truncatingIfNeeded: packet.id),
+				portNum: 0,
+				channel: Int(packet.channel),
+				hopStart: packet.hopStart == 0 ? nil : Int(packet.hopStart),
+				hopLimit: packet.hopLimit == 0 ? nil : Int(packet.hopLimit),
+				rssi: packet.hasRxRssi ? Int(packet.rxRssi) : nil,
+				snr: packet.rxSnr == 0 ? nil : packet.rxSnr,
+				viaMqtt: packet.viaMqtt,
+				rawPayload: nil
+			)
+		}
+
+		Task { @MainActor in
+			FieldLoggingService.shared.logRadioObservation(packetMetaData: metadata)
+		}
+	}
+
 	private func postMessageChange() {
 		Task { @MainActor in
 			NotificationCenter.default.post(name: .meshMessagesDidChange, object: nil)

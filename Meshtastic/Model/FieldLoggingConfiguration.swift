@@ -5,11 +5,12 @@
 
 import Foundation
 
-enum FieldLoggingPreset: String, CaseIterable, Codable, Identifiable, Sendable {
+enum LoggingPreset: String, CaseIterable, Codable, Identifiable, Sendable {
 	case minimal
 	case balanced
 	case rfSurvey
 	case fullCapture
+	case custom
 
 	var id: String { rawValue }
 
@@ -23,83 +24,68 @@ enum FieldLoggingPreset: String, CaseIterable, Codable, Identifiable, Sendable {
 			return String(localized: "RF Survey")
 		case .fullCapture:
 			return String(localized: "Full Capture")
-		}
-	}
-
-	var configuration: FieldLoggingConfiguration {
-		switch self {
-		case .minimal:
-			return FieldLoggingConfiguration(
-				preset: self,
-				saveGPS: true,
-				saveLocationAccuracy: false,
-				saveRadioObservations: false,
-				saveSignalData: false,
-				saveRoutingMetadata: false,
-				saveTelemetry: false,
-				saveRawPayloads: false,
-				gpsAccuracy: .hundredMeters,
-				gpsDistanceFilter: 10
-			)
-		case .balanced:
-			return FieldLoggingConfiguration(
-				preset: self,
-				saveGPS: true,
-				saveLocationAccuracy: true,
-				saveRadioObservations: true,
-				saveSignalData: true,
-				saveRoutingMetadata: false,
-				saveTelemetry: true,
-				saveRawPayloads: false,
-				gpsAccuracy: .best,
-				gpsDistanceFilter: 10
-			)
-		case .rfSurvey:
-			return FieldLoggingConfiguration(
-				preset: self,
-				saveGPS: true,
-				saveLocationAccuracy: true,
-				saveRadioObservations: true,
-				saveSignalData: true,
-				saveRoutingMetadata: true,
-				saveTelemetry: true,
-				saveRawPayloads: false,
-				gpsAccuracy: .best,
-				gpsDistanceFilter: 5
-			)
-		case .fullCapture:
-			return FieldLoggingConfiguration(
-				preset: self,
-				saveGPS: true,
-				saveLocationAccuracy: true,
-				saveRadioObservations: true,
-				saveSignalData: true,
-				saveRoutingMetadata: true,
-				saveTelemetry: true,
-				saveRawPayloads: true,
-				gpsAccuracy: .best,
-				gpsDistanceFilter: 0
-			)
+		case .custom:
+			return String(localized: "Custom")
 		}
 	}
 }
 
 struct FieldLoggingConfiguration: Codable, Equatable, Sendable {
-	enum GPSAccuracy: String, Codable, Sendable {
-		case hundredMeters
-		case best
+	var desiredAccuracy: Double
+	var distanceFilter: Double
+	var timeIntervalFilter: TimeInterval?
+	var logRadioMetadata: Bool
+	var logRawPayloads: Bool
+	var enabledPortFilter: [Int]?
+	var maxDuration: TimeInterval?
+	var maxStorageMB: Int?
+
+	static func preset(_ preset: LoggingPreset) -> FieldLoggingConfiguration {
+		switch preset {
+		case .minimal:
+			return FieldLoggingConfiguration(
+				desiredAccuracy: 100,
+				distanceFilter: 10,
+				timeIntervalFilter: 60,
+				logRadioMetadata: false,
+				logRawPayloads: false,
+				enabledPortFilter: nil,
+				maxDuration: nil,
+				maxStorageMB: nil
+			)
+		case .balanced, .custom:
+			return FieldLoggingConfiguration(
+				desiredAccuracy: 10,
+				distanceFilter: 10,
+				timeIntervalFilter: 10,
+				logRadioMetadata: true,
+				logRawPayloads: false,
+				enabledPortFilter: nil,
+				maxDuration: nil,
+				maxStorageMB: nil
+			)
+		case .rfSurvey:
+			return FieldLoggingConfiguration(
+				desiredAccuracy: 5,
+				distanceFilter: 5,
+				timeIntervalFilter: 1,
+				logRadioMetadata: true,
+				logRawPayloads: false,
+				enabledPortFilter: nil,
+				maxDuration: nil,
+				maxStorageMB: nil
+			)
+		case .fullCapture:
+			return FieldLoggingConfiguration(
+				desiredAccuracy: 1,
+				distanceFilter: 1,
+				timeIntervalFilter: 1,
+				logRadioMetadata: true,
+				logRawPayloads: true,
+				enabledPortFilter: nil,
+				maxDuration: nil,
+				maxStorageMB: nil
+			)
+		}
 	}
-
-	var preset: FieldLoggingPreset
-	var saveGPS: Bool
-	var saveLocationAccuracy: Bool
-	var saveRadioObservations: Bool
-	var saveSignalData: Bool
-	var saveRoutingMetadata: Bool
-	var saveTelemetry: Bool
-	var saveRawPayloads: Bool
-	var gpsAccuracy: GPSAccuracy
-	var gpsDistanceFilter: Double
-
-	static let balanced = FieldLoggingPreset.balanced.configuration
 }

@@ -14,6 +14,7 @@ final class LoggingSessionEntity {
 	var startedAt: Date
 	var endedAt: Date?
 	var presetRawValue: String
+	var configurationData: Data?
 
 	init(
 		id: UUID = UUID(),
@@ -21,7 +22,8 @@ final class LoggingSessionEntity {
 		activity: String,
 		startedAt: Date,
 		endedAt: Date? = nil,
-		presetRawValue: String
+		presetRawValue: String,
+		configurationData: Data? = nil
 	) {
 		self.id = id
 		self.name = name
@@ -29,5 +31,6 @@ final class LoggingSessionEntity {
 		self.startedAt = startedAt
 		self.endedAt = endedAt
 		self.presetRawValue = presetRawValue
+		self.configurationData = configurationData
 	}
 }

@@ -17,7 +17,7 @@ import OSLog
 	public var manager = CLLocationManager()
 	private var background: CLBackgroundActivitySession?
 	private var locationDeliveryStarted = false
-	private lazy var fieldLoggingService = FieldLoggingService(modelContext: PersistenceController.shared.context)
+	private var fieldLoggingService: FieldLoggingService { .shared }
 	var enableSmartPosition: Bool = UserDefaults.enableSmartPosition
 
 	@Published var locationsArray: [CLLocation] = [CLLocation]()
@@ -142,6 +142,7 @@ import OSLog
 		self.manager.desiredAccuracy = kCLLocationAccuracyHundredMeters
 		// Only deliver updates when the device has moved at least 10 meters.
 		self.manager.distanceFilter = 10
+		fieldLoggingService.attachLocationManager(manager)
 		#if !os(visionOS)
 		if CLLocationManager.headingAvailable() {
 				self.manager.headingFilter = 1 // Update heading when it changes by 1 degree

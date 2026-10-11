@@ -42,6 +42,7 @@ extension PaxCounterEntity: @unchecked Sendable {}
 extension PositionConfigEntity: @unchecked Sendable {}
 extension PositionEntity: @unchecked Sendable {}
 extension PowerConfigEntity: @unchecked Sendable {}
+extension RadioObservationEntity: @unchecked Sendable {}
 extension RTTTLConfigEntity: @unchecked Sendable {}
 extension RangeTestConfigEntity: @unchecked Sendable {}
 extension RouteEntity: @unchecked Sendable {}
