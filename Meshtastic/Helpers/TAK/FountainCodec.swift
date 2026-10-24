@@ -334,6 +334,12 @@ final class FountainCodec {
 			return nil
 		}
 
+		// K comes straight off the mesh; with no source blocks the degree sampler's 1...K range traps.
+		guard header.K > 0 else {
+			Logger.tak.warning("Invalid fountain block count: 0")
+			return nil
+		}
+
 		// Get or create receive state
 		let state: FountainReceiveState
 		if let existing = receiveStates[header.transferId] {
@@ -557,7 +563,8 @@ final class FountainCodec {
 		// Ideal Soliton distribution
 		var rho = [Double](repeating: 0, count: K + 1)
 		rho[1] = 1.0 / Double(K)
-		for d in 2...K {
+		// stride, not 2...K: that range traps when K is 1.
+		for d in stride(from: 2, through: K, by: 1) {
 			rho[d] = 1.0 / (Double(d) * Double(d - 1))
 		}
 
