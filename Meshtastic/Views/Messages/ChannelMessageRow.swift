@@ -20,6 +20,7 @@ struct ChannelMessageRow: View {
 	@Binding var messageToHighlight: Int64
 	let scrollView: ScrollViewProxy
 	let onTapback: (MessageEntity) -> Void
+	let swipeOffset: CGFloat
 	let onMessageRetried: () -> Void
 
 	private var isCurrentUser: Bool {
@@ -59,6 +60,7 @@ struct ChannelMessageRow: View {
 	     messageFieldFocused: FocusState<Bool>.Binding,
 	     messageToHighlight: Binding<Int64>,
 	     scrollView: ScrollViewProxy,
+	     swipeOffset: CGFloat = 0,
 	     onTapback: @escaping (MessageEntity) -> Void,
 	     onMessageRetried: @escaping () -> Void = {}) {
 		// Initialize ObservedObject with the concrete instance
@@ -73,6 +75,7 @@ struct ChannelMessageRow: View {
 		self._messageToHighlight = messageToHighlight
 		self.scrollView = scrollView
 		self.onTapback = onTapback
+		self.swipeOffset = swipeOffset
 		self.onMessageRetried = onMessageRetried
 	}
 
@@ -200,6 +203,11 @@ struct ChannelMessageRow: View {
 			}
 			.padding([.leading, .trailing])
 			.frame(maxWidth: .infinity)
+			.overlay(alignment: .trailing) {
+				MessageSwipeDetails(message: message, isCurrentUser: isCurrentUser)
+					.offset(x: MessageSwipeDetails.width)
+			}
+			.offset(x: swipeOffset)
 			
 		}
 		.id(message.messageId) // ID for scrolling/highlighting
