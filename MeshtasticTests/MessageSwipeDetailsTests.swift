@@ -9,6 +9,10 @@ struct MessageSwipeDetailsTests {
 		#expect(MessageSwipeDetails.hopsText(isCurrentUser: false, viaMqtt: false, hopsAway: 3) == "3 hops")
 	}
 
+	@Test func oneHopIsSingular() {
+		#expect(MessageSwipeDetails.hopsText(isCurrentUser: false, viaMqtt: false, hopsAway: 1) == "1 hop")
+	}
+
 	@Test func zeroHopsIsDirect() {
 		#expect(MessageSwipeDetails.hopsText(isCurrentUser: false, viaMqtt: false, hopsAway: 0) == "Direct")
 	}

@@ -10,7 +10,8 @@ struct MessageSwipeDetails: View {
 	/// Same rule as Message Details: incoming, not via MQTT, and the sender's hop count is known.
 	static func hopsText(isCurrentUser: Bool, viaMqtt: Bool, hopsAway: Int32?) -> String? {
 		guard !isCurrentUser, !viaMqtt, let hopsAway else { return nil }
-		return hopsAway == 0 ? String(localized: "Direct") : String(localized: "\(hopsAway) hops")
+		if hopsAway == 0 { return String(localized: "Direct") }
+		return hopsAway == 1 ? String(localized: "1 hop") : String(localized: "\(hopsAway) hops")
 	}
 
 	var body: some View {
