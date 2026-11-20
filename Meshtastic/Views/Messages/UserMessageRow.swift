@@ -24,6 +24,7 @@ struct UserMessageRow: View {
 	@Binding var messageToHighlight: Int64
 	let scrollView: ScrollViewProxy
 	let onTapback: (MessageEntity) -> Void
+	let swipeOffset: CGFloat
 	
 	private var isCurrentUser: Bool {
 		Int64(preferredPeripheralNum) == message.fromUser?.num
@@ -63,6 +64,7 @@ struct UserMessageRow: View {
 		messageFieldFocused: FocusState<Bool>.Binding,
 		messageToHighlight: Binding<Int64>,
 		scrollView: ScrollViewProxy,
+		swipeOffset: CGFloat = 0,
 		onTapback: @escaping (MessageEntity) -> Void
 	) {
 		// Initialize ObservedObject with the concrete instance
@@ -77,6 +79,7 @@ struct UserMessageRow: View {
 		self._messageToHighlight = messageToHighlight
 		self.scrollView = scrollView
 		self.onTapback = onTapback
+		self.swipeOffset = swipeOffset
 	}
 	
 	var body: some View {
@@ -200,6 +203,11 @@ struct UserMessageRow: View {
 			}
 			.padding([.leading, .trailing])
 			.frame(maxWidth: .infinity)
+			.overlay(alignment: .trailing) {
+				MessageSwipeDetails(message: message, isCurrentUser: isCurrentUser)
+					.offset(x: MessageSwipeDetails.width)
+			}
+			.offset(x: swipeOffset)
 			
 		}
 		.id(message.messageId)

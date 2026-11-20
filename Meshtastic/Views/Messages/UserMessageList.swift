@@ -266,6 +266,8 @@ struct UserMessageList: View {
 		tapbackTargetMessage = nil
 	}
 
+	@State private var swipeOffset: CGFloat = 0
+
 	var body: some View {
 		VStack {
 			if !searchQuery.isEmpty { searchBar }
@@ -296,6 +298,7 @@ struct UserMessageList: View {
 								messageFieldFocused: $messageFieldFocused,
 								messageToHighlight: $messageToHighlight,
 								scrollView: scrollView,
+								swipeOffset: swipeOffset,
 								onTapback: { message in
 									tapbackFocused = false
 									tapbackTargetMessage = message
@@ -326,6 +329,7 @@ struct UserMessageList: View {
 				.trackMessageScrollViewport(scrollTracker)
 				.messageBottomScrollPosition(request: bottomScrollRequest, tracker: scrollTracker)
 				.defaultScrollAnchor(.bottom)
+				.messageSwipeReveal($swipeOffset)
 				.defaultScrollAnchorBottomSizeChanges()
 				.dismissesKeyboardOnScroll()
 				.onAppear {
